@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input id="message"></textarea>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('http://localhost:8080/');
+
+    document.getElementById('message').addEventListener('keypress', (ev) => {
+      if (ev.key === 'Enter') {
+        const message = ev.target.value;
+        socket.emit("message", message);
+        ev.target.value = '';
+      }
+    });
+
+    socket.on("message",data => {
+        console.log(data)
+        alert(data)
+    })
+  </script>
+</html>
