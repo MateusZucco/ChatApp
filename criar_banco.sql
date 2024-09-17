@@ -28,9 +28,10 @@ CREATE TABLE IF NOT EXISTS `chat_schema`.`users` (
   `ddd` VARCHAR(2) NOT NULL,
   `country_code` VARCHAR(2) NOT NULL, 
   `phone_number` VARCHAR(9) NOT NULL, 
-  `created_at` DATE NOT NULL,
-  `updated_at` DATE NULL,
   `email` VARCHAR(45) NOT NULL,
+  `phot_url` TEXT,
+  `created_at` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` DATE NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `userId_UNIQUE` (`user_id` ASC) )
 ENGINE = InnoDB;
@@ -42,10 +43,10 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `chat_schema`.`contacts` (
   `contact_id` INT NOT NULL AUTO_INCREMENT,
   `user_owner_id` INT NOT NULL,
-  `user_referenced_id` INT NOT NULL,
-  `created_at` DATE NOT NULL,
-  `updated_at` DATE NULL,
+  `user_referenced_id` INT NOT NULL,  
   `nickname` VARCHAR(45) NOT NULL,
+  `created_at` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` DATE NULL,
   PRIMARY KEY (`contact_id`),
   UNIQUE INDEX `userId_UNIQUE` (`contact_id` ASC) ,
   INDEX `fk_user_owner_idx` (`user_owner_id` ASC) ,
@@ -70,15 +71,20 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `chat_schema`.`chats` (
   `chat_id` INT NOT NULL AUTO_INCREMENT,
   `text` TEXT(500) NOT NULL,
-  `contact_id` INT NOT NULL,
-  `created_at` DATE NOT NULL,
+  `contact_to_id` INT NOT NULL,
+  `contact_from_id` INT NOT NULL,
+  `created_at` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `updated_at` DATE NULL,
-  `recived_at` DATE NOT NULL,
+  `recived_at` DATE NULL,
+  `read_at` DATE NULL,
   PRIMARY KEY (`chat_id`),
   UNIQUE INDEX `userId_UNIQUE` (`chat_id` ASC) ,
-  INDEX `fk_contact_id_idx` (`contact_id` ASC) ,
-  CONSTRAINT `fk_contact_id`
-    FOREIGN KEY (`contact_id`)
+  INDEX `fk_contact_id_idx` (`contact_to_id` ASC) ,
+  CONSTRAINT `fk_contact_to_id`
+    FOREIGN KEY (`contact_to_id`)
+    REFERENCES `chat_schema`.`contacts` (`contact_id`),
+  CONSTRAINT `fk_contact_from_id`
+    FOREIGN KEY (`contact_from_id`)
     REFERENCES `chat_schema`.`contacts` (`contact_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
